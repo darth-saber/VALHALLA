@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VALHALLA">
+<meta name="format-detection" content="telephone=no">
 <title>VALHALLA - Ultimate JARVIS HUD</title>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -16,43 +20,73 @@
 
   <div class="panel floating-panel" id="responsePanel">
     <h2>AI Response</h2>
-    <pre id="responseArea">Awaiting command...</pre>
+    <div class="response-content">
+      <pre id="responseArea">Awaiting command...</pre>
+    </div>
   </div>
 
   <div class="panel floating-panel" id="infoPanel">
     <h2>System Info</h2>
-    <p id="timeInfo"></p>
-    <p id="weatherInfo"></p>
+    <div class="info-content">
+      <p id="timeInfo" class="status-info"></p>
+      <p id="weatherInfo" class="status-info"></p>
+    </div>
   </div>
 
   <div class="panel floating-panel" id="reminderPanel">
     <h2>Reminders</h2>
-    <ul id="reminderList"></ul>
+    <div class="reminder-content">
+      <ul id="reminderList"></ul>
+    </div>
   </div>
 
   <div class="panel floating-panel" id="notificationPanel">
     <h2>Notifications</h2>
-    <ul id="notificationList"></ul>
+    <div class="notification-content">
+      <ul id="notificationList"></ul>
+    </div>
   </div>
 
   <div class="panel floating-panel" id="voicePanel">
     <h2>Voice Settings</h2>
-    <select id="voiceSelect">
-      <option value="default">Default</option>
-      <option value="deep">Deep</option>
-      <option value="calm">Calm</option>
-      <option value="witty">Witty</option>
-    </select>
+    <div class="voice-content">
+      <select id="voiceSelect" class="voice-select">
+        <option value="default">Default Voice</option>
+        <option value="jarvis">JARVIS Style</option>
+        <option value="deep">Deep Voice</option>
+        <option value="calm">Calm Voice</option>
+        <option value="witty">Witty Voice</option>
+      </select>
+    </div>
   </div>
 
   <div class="controls">
-    <button id="speakBtn">🎤 Speak</button>
-    <button id="sendBtn">Send</button>
-    <button id="uploadBtn">📂 Upload File</button>
-    <input type="file" id="fileInput" style="display:none;">
-    <textarea id="userInput" placeholder="Type command..."></textarea>
+    <div class="button-row">
+      <button id="speakBtn" class="control-btn">🎤 Speak</button>
+      <button id="sendBtn" class="control-btn">Send</button>
+      <button id="uploadBtn" class="control-btn">📂 Upload</button>
+    </div>
+    <div class="input-row">
+      <textarea id="userInput" class="command-input" placeholder="Type command..." rows="3"></textarea>
+    </div>
+    <input type="file" id="fileInput" accept=".pdf,.txt,.png,.jpg,.jpeg,.gif" style="display:none;">
   </div>
 </div>
+
+<!-- Mobile-specific elements -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="nav-btn" data-panel="responsePanel">Response</button>
+  <button class="nav-btn" data-panel="infoPanel">Info</button>
+  <button class="nav-btn" data-panel="reminderPanel">Reminders</button>
+  <button class="nav-btn" data-panel="notificationPanel">Alerts</button>
+</div>
+
+<!-- Loading indicator -->
+<div id="loadingIndicator" class="loading-overlay" style="display: none;">
+  <div class="loading-spinner"></div>
+  <p>Processing...</p>
+</div>
+
 <script src="script.js"></script>
 </body>
 </html>

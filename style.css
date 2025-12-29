@@ -2,10 +2,84 @@ body {
     margin: 0; padding: 0;
     font-family: 'Orbitron', sans-serif;
     background: radial-gradient(circle at center, #0c0c0c, #050505);
-    color: #00ffea; overflow: hidden;
+    color: #00ffea; overflow-x: hidden; overflow-y: auto;
 }
 
-.hud-container { position: relative; width: 100vw; height: 100vh; padding: 20px; }
+.hud-container { 
+    position: relative; 
+    width: 100vw; 
+    min-height: 100vh; 
+    padding: 20px; 
+}
+
+/* OVERRIDE POSITIONING FOR MOBILE - SIMPLE VERTICAL STACK */
+@media (max-width: 768px) {
+    .hud-container {
+        display: block !important;
+        padding: 15px 10px 100px 10px !important;
+        min-height: 100vh !important;
+        position: relative !important;
+    }
+    
+    .hud-center {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        text-align: center !important;
+        margin-bottom: 30px !important;
+    }
+    
+    .panel {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 20px 0 !important;
+        padding: 20px !important;
+        display: block !important;
+        float: none !important;
+        clear: both !important;
+    }
+    
+    /* MAXIMUM SPACING FIX - SYSTEM INFO AND NOTIFICATIONS */
+    #infoPanel {
+        margin-top: 40px !important;
+        margin-bottom: 80px !important;
+        padding: 25px !important;
+        border-bottom: 3px solid rgba(0,255,234,0.5) !important;
+    }
+    
+    #notificationPanel {
+        margin-top: 80px !important;
+        margin-bottom: 40px !important;
+        padding: 25px !important;
+        border-top: 3px solid rgba(0,255,234,0.5) !important;
+    }
+    
+    /* Force extra spacing with pseudo-element */
+    #infoPanel::after {
+        content: "" !important;
+        display: block !important;
+        height: 50px !important;
+        width: 100% !important;
+        margin: 0 !important;
+        background: transparent !important;
+    }
+    
+    .controls {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin-top: 50px !important;
+        text-align: center !important;
+    }
+}
 
 .hud-center {
     position: absolute; top: 40%; left: 50%;
@@ -54,7 +128,922 @@ button {
 }
 button:hover { background: rgba(0,255,234,0.2); }
 
+button.listening {
+    background: rgba(255, 69, 0, 0.3);
+    border-color: #ff4500;
+    animation: listening-pulse 1s infinite;
+}
+
+@keyframes listening-pulse {
+    0% { transform: scale(1); box-shadow: 0 0 10px #ff4500; }
+    50% { transform: scale(1.05); box-shadow: 0 0 20px #ff4500; }
+    100% { transform: scale(1); box-shadow: 0 0 10px #ff4500; }
+}
+
 textarea {
     width: 300px; height: 40px; border-radius: 8px; border: 1px solid #00ffea;
     background: transparent; color: #00ffea; padding: 5px;
+    resize: vertical; min-height: 40px; max-height: 120px;
+    transition: all 0.3s ease;
+}
+
+textarea:focus {
+    border-color: #00ffff;
+    box-shadow: 0 0 15px rgba(0,255,255,0.3);
+    outline: none;
+}
+
+/* Enhanced notification styles */
+#notificationList li {
+    margin: 5px 0; padding: 8px 12px;
+    background: rgba(0, 50, 50, 0.3); border-left: 3px solid #00ffea;
+    border-radius: 4px; animation: slideIn 0.5s ease-out;
+    font-size: 0.9em;
+}
+
+#notificationList li.error {
+    border-left-color: #ff4444; background: rgba(50, 0, 0, 0.3);
+}
+
+#notificationList li.success {
+    border-left-color: #44ff44; background: rgba(0, 50, 0, 0.3);
+}
+
+#notificationList li.warning {
+    border-left-color: #ffaa00; background: rgba(50, 50, 0, 0.3);
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Enhanced reminder styles */
+#reminderList li {
+    margin: 5px 0; padding: 8px 12px;
+    background: rgba(0, 30, 30, 0.3); border-left: 3px solid #00ffff;
+    border-radius: 4px; animation: fadeIn 0.5s ease-out;
+    font-size: 0.9em;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Search history panel */
+#searchPanel {
+    position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
+    width: 300px; max-height: 200px; overflow-y: auto;
+    background: rgba(0,0,0,0.4); border: 1px solid #00ffea; 
+    border-radius: 12px; padding: 15px; backdrop-filter: blur(15px);
+    display: none;
+}
+
+#searchPanel.show { display: block; }
+
+#searchList li {
+    margin: 3px 0; padding: 6px 10px;
+    background: rgba(20, 20, 40, 0.3); border-radius: 4px;
+    cursor: pointer; transition: all 0.2s ease;
+}
+
+#searchList li:hover {
+    background: rgba(0, 50, 50, 0.3); transform: translateX(5px);
+}
+
+/* Enhanced loading animation */
+.loading {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border: 2px solid #00ffea; border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* System status indicators */
+.status-indicator {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block; margin-right: 8px;
+    animation: status-pulse 2s infinite;
+}
+
+.status-online { background: #00ff00; }
+.status-offline { background: #ff0000; }
+.status-warning { background: #ffaa00; }
+
+@keyframes status-pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Enhanced voice feedback */
+.voice-active {
+    box-shadow: 0 0 25px rgba(0,255,255,0.6) !important;
+    transform: scale(1.02);
+}
+
+/* Weather display enhancements */
+.weather-icon {
+    font-size: 1.5em; margin-right: 10px;
+    display: inline-block; animation: weather-float 3s ease-in-out infinite;
+}
+
+@keyframes weather-float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Enhanced error states */
+.error-message {
+    color: #ff4444; background: rgba(50, 0, 0, 0.3);
+    border: 1px solid #ff4444; padding: 10px; border-radius: 8px;
+    margin: 10px 0;
+}
+
+.success-message {
+    color: #44ff44; background: rgba(0, 50, 0, 0.3);
+    border: 1px solid #44ff44; padding: 10px; border-radius: 8px;
+    margin: 10px 0;
+}
+
+/* Keyboard shortcuts help */
+.keyboard-hint {
+    position: fixed; bottom: 20px; right: 20px;
+    background: rgba(0,0,0,0.8); color: #00ffea;
+    padding: 10px 15px; border-radius: 8px; font-size: 0.8em;
+    border: 1px solid #00ffea; backdrop-filter: blur(10px);
+    opacity: 0; transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.keyboard-hint.show {
+    opacity: 1; transform: translateY(0);
+}
+
+/* Enhanced Mobile Responsiveness */
+
+/* Large Tablets (iPad Pro) */
+@media (max-width: 1024px) {
+    .hud-container { 
+        padding: 20px; 
+        max-width: 100%;
+    }
+    
+    .panel { 
+        width: 90%; 
+        margin: 15px auto;
+        padding: 25px;
+        min-height: auto;
+    }
+    
+    textarea { 
+        width: 100%; 
+        min-height: 60px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        margin-bottom: 15px;
+    }
+    
+    button {
+        padding: 15px 20px;
+        font-size: 15px;
+        margin: 8px;
+        min-height: 50px;
+    }
+    
+    .controls {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        transform: none;
+        margin-top: 20px;
+        text-align: center;
+        gap: 15px;
+    }
+}
+
+/* Tablets and Small Laptops */
+@media (max-width: 768px) {
+    .hud-container { 
+        padding: 15px; 
+        margin: 0;
+    }
+    
+    .panel { 
+        position: relative; 
+        margin: 15px 0; 
+        width: 100%; 
+        left: 0; right: 0;
+        transform: none;
+        padding: 20px;
+        min-height: auto;
+    }
+    
+    .controls { 
+        position: relative; 
+        bottom: auto; 
+        left: auto; 
+        transform: none; 
+        margin-top: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    textarea { 
+        width: 100%; 
+        min-height: 70px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+    
+    button {
+        width: 85%;
+        max-width: 350px;
+        padding: 18px 20px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        border-radius: 8px;
+        margin: 10px 0;
+        min-height: 50px;
+    }
+    
+    .response-panel {
+        font-size: 14px;
+        line-height: 1.5;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    #responseArea {
+        padding: 15px;
+        font-size: 14px;
+    }
+}
+
+/* iPhone and Small Mobile Devices */
+@media (max-width: 480px) {
+    .hud-container { 
+        padding: 15px; 
+        margin: 0;
+    }
+    
+    body {
+        font-size: 14px;
+    }
+    
+    .panel { 
+        margin: 15px 0; 
+        padding: 18px;
+        border-radius: 8px;
+        backdrop-filter: blur(10px);
+        min-height: auto;
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+        transform: none !important;
+    }
+    
+    .controls {
+        margin-top: 25px;
+        gap: 15px;
+    }
+    
+    textarea { 
+        width: 100%; 
+        min-height: 80px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+    
+    button {
+        width: 90%;
+        max-width: none;
+        padding: 15px 18px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        border-radius: 8px;
+        touch-action: manipulation; /* Improves touch responsiveness */
+        margin: 8px 0;
+        min-height: 50px;
+        min-width: 120px;
+    }
+    
+    #responseArea {
+        padding: 15px;
+        font-size: 13px;
+        line-height: 1.4;
+        max-height: 180px;
+    }
+    
+    /* CRITICAL: Extra spacing between System Info and Notifications on iPhone */
+    #infoPanel {
+        margin-bottom: 30px !important;
+        padding-bottom: 20px !important;
+    }
+    
+    #notificationPanel {
+        margin-top: 35px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    /* Add visual separator between these specific panels */
+    #infoPanel::after {
+        content: "";
+        display: block;
+        height: 20px;
+        margin: 0;
+    }
+    
+    /* Smaller notification text with better spacing */
+    #notificationList li {
+        font-size: 12px;
+        padding: 8px 12px;
+        margin: 6px 0;
+        border-radius: 6px;
+    }
+    
+    /* Adjust panel titles */
+    h1, h2, h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    /* Better spacing for lists */
+    #reminderList li, #notificationList li {
+        margin: 8px 0;
+        padding: 10px 14px;
+    }
+}
+
+/* Very Small Screens (iPhone SE, small Android) */
+@media (max-width: 360px) {
+    .hud-container { 
+        padding: 12px; 
+    }
+    
+    .panel { 
+        padding: 14px;
+        margin: 10px 0;
+        min-height: auto;
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        position: relative !important;
+        transform: none !important;
+    }
+    
+    textarea { 
+        min-height: 70px;
+        font-size: 15px;
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+    
+    button {
+        padding: 12px 16px;
+        font-size: 15px;
+        margin: 6px 0;
+        min-height: 45px;
+        width: 85%;
+    }
+    
+    #responseArea {
+        font-size: 12px;
+        padding: 12px;
+        max-height: 140px;
+    }
+    
+    /* CRITICAL: Maximum spacing on very small screens */
+    #infoPanel {
+        margin-bottom: 35px !important;
+        padding-bottom: 25px !important;
+    }
+    
+    #notificationPanel {
+        margin-top: 40px !important;
+        margin-bottom: 25px !important;
+    }
+    
+    /* Strongest possible separator */
+    #infoPanel::after {
+        content: "";
+        display: block;
+        height: 25px;
+        margin: 0;
+        clear: both;
+    }
+    
+    /* Adjust font sizes for very small screens */
+    h1 { font-size: 24px !important; }
+    h2 { font-size: 16px !important; }
+    h3 { font-size: 14px !important; }
+    
+    /* Better spacing for notifications and reminders */
+    #notificationList li, #reminderList li {
+        font-size: 11px;
+        padding: 8px 10px;
+        margin: 5px 0;
+    }
+    
+    /* Status info for very small screens */
+    .status-info {
+        font-size: 11px;
+        margin: 3px 0;
+    }
+}
+
+/* Landscape orientation optimizations */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hud-container {
+        padding: 5px;
+    }
+    
+    .panel {
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+    
+    textarea {
+        min-height: 40px;
+    }
+    
+    .controls {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    button {
+        width: auto;
+        min-width: 100px;
+        flex: 0 1 auto;
+    }
+}
+
+/* iPad specific optimizations */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .hud-container {
+        max-width: 90%;
+        margin: 0 auto;
+    }
+    
+    .panel {
+        width: 90%;
+        margin: 10px auto;
+        padding: 25px;
+    }
+    
+    textarea {
+        width: 100%;
+        min-height: 50px;
+        font-size: 16px;
+    }
+    
+    button {
+        padding: 14px 20px;
+        font-size: 15px;
+    }
+    
+    .controls {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+}
+
+/* Touch device optimizations */
+@media (pointer: coarse) {
+    button {
+        min-height: 44px; /* Apple's recommended touch target size */
+        min-width: 44px;
+    }
+    
+    textarea {
+        min-height: 44px;
+    }
+    
+    /* Increase touch feedback */
+    button:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+}
+
+/* FORCE VERTICAL STACKING ON MOBILE - COMPREHENSIVE FIX */
+@media (max-width: 768px) {
+    /* Override all absolute positioning on mobile */
+    .floating-panel {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        width: 100% !important;
+        margin: 15px 0 !important;
+        display: block !important;
+    }
+    
+    /* Specific positioning for each panel in vertical order */
+    #responsePanel {
+        order: 1;
+        margin-top: 20px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    #infoPanel {
+        order: 2;
+        margin-top: 25px !important;
+        margin-bottom: 35px !important; /* Extra spacing before notifications */
+        padding-bottom: 20px !important;
+    }
+    
+    #notificationPanel {
+        order: 3;
+        margin-top: 40px !important; /* Even more spacing from system info */
+        margin-bottom: 25px !important;
+        padding-top: 20px !important;
+    }
+    
+    #reminderPanel {
+        order: 4;
+        margin-top: 25px !important;
+        margin-bottom: 25px !important;
+    }
+    
+    #voicePanel {
+        order: 5;
+        margin-top: 25px !important;
+        margin-bottom: 30px !important;
+    }
+    
+/* Visual separator between info and notification panels */
+    #infoPanel::after {
+        content: "═══════════════════════════════════════════════════════════";
+        display: block;
+        text-align: center;
+        color: rgba(0,255,234,0.3);
+        font-size: 12px;
+        margin: 15px 0;
+        height: 20px;
+        line-height: 20px;
+    }
+    
+    /* Container adjustments */
+    .hud-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 15px 10px 90px 10px !important;
+    }
+    
+    /* Center content on mobile */
+    .floating-panel {
+        max-width: 500px;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    
+    /* FINAL FIX: Force maximum separation between System Info and Notifications */
+    #infoPanel {
+        margin-bottom: 50px !important;
+        padding-bottom: 30px !important;
+        border-bottom: 2px dashed rgba(0,255,234,0.4) !important;
+    }
+    
+    #notificationPanel {
+        margin-top: 50px !important;
+        padding-top: 30px !important;
+        border-top: 2px dashed rgba(0,255,234,0.4) !important;
+    }
+    
+    /* Ensure no other CSS can override this spacing */
+    .panel#infoPanel, .panel#notificationPanel {
+        clear: both !important;
+        float: none !important;
+        display: block !important;
+    }
+}
+
+/* Enhanced HTML Structure Styles */
+.response-content, .info-content, .reminder-content, .notification-content, .voice-content {
+    margin-top: 10px;
+}
+
+.voice-select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #00ffea;
+    background: rgba(0,0,0,0.3);
+    color: #00ffea;
+    font-size: 14px;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.button-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.input-row {
+    width: 100%;
+    max-width: 500px;
+}
+
+.control-btn {
+    flex: 1;
+    min-width: 100px;
+    max-width: 160px;
+    min-height: 50px;
+    margin: 5px;
+}
+
+/* Better mobile button spacing */
+@media (max-width: 768px) {
+    .button-row {
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .control-btn {
+        width: 85%;
+        max-width: 350px;
+        margin: 8px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .button-row {
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .control-btn {
+        width: 90%;
+        max-width: none;
+        min-height: 50px;
+        font-size: 16px;
+        padding: 15px 20px;
+        margin: 6px 0;
+    }
+}
+
+.command-input {
+    width: 100%;
+    min-height: 60px;
+    max-height: 120px;
+    resize: vertical;
+}
+
+/* Mobile Navigation */
+.mobile-nav {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.9);
+    backdrop-filter: blur(15px);
+    padding: 15px 10px;
+    z-index: 1000;
+    border-top: 2px solid #00ffea;
+    box-shadow: 0 -2px 20px rgba(0,255,234,0.3);
+}
+
+.mobile-nav .nav-btn {
+    flex: 1;
+    margin: 0 8px;
+    padding: 12px 8px;
+    font-size: 12px;
+    border-radius: 8px;
+    min-height: 50px;
+    border: 1px solid rgba(0,255,234,0.3);
+    background: rgba(0,0,0,0.5);
+    color: #00ffea;
+    transition: all 0.3s ease;
+}
+
+.mobile-nav .nav-btn:hover {
+    background: rgba(0,255,234,0.2);
+    border-color: #00ffea;
+    transform: translateY(-2px);
+}
+
+.mobile-nav .nav-btn:active {
+    transform: scale(0.98);
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    color: #00ffea;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(0,255,234,0.3);
+    border-top: 3px solid #00ffea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+/* Mobile Navigation Display */
+@media (max-width: 768px) {
+    .mobile-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .hud-container {
+        padding-bottom: 90px; /* Space for mobile nav */
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .floating-panel {
+        margin-bottom: 15px;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    /* Better spacing between elements on mobile */
+    .panel {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+    }
+    
+    /* Specific spacing between System Info and Notifications panels */
+    #infoPanel {
+        margin-bottom: 25px !important;
+        position: relative;
+    }
+    
+    #notificationPanel {
+        margin-top: 25px !important;
+        position: relative;
+    }
+    
+    /* Ensure proper vertical separation */
+    #infoPanel + #notificationPanel {
+        margin-top: 30px !important;
+    }
+}
+
+/* Hide mobile nav on larger screens */
+@media (min-width: 769px) {
+    .mobile-nav {
+        display: none !important;
+    }
+    
+    .hud-container {
+        padding-bottom: 0;
+    }
+}
+
+/* ULTIMATE FIX: Maximum specificity for mobile panel separation */
+@media screen and (max-width: 768px) {
+    
+    /* Force all panels to stack vertically with maximum separation */
+    .hud-container .panel.floating-panel#infoPanel {
+        margin-top: 30px !important;
+        margin-bottom: 60px !important;
+        padding: 20px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+        position: relative !important;
+        display: block !important;
+        clear: both !important;
+    }
+    
+    .hud-container .panel.floating-panel#notificationPanel {
+        margin-top: 60px !important;
+        margin-bottom: 30px !important;
+        padding: 20px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+        position: relative !important;
+        display: block !important;
+        clear: both !important;
+    }
+    
+    /* Visual separator line between the two panels */
+    .hud-container .panel.floating-panel#infoPanel::after {
+        content: "" !important;
+        display: block !important;
+        width: 100% !important;
+        height: 30px !important;
+        background: linear-gradient(90deg, transparent 0%, rgba(0,255,234,0.3) 50%, transparent 100%) !important;
+        margin: 20px 0 !important;
+        border-top: 2px dashed rgba(0,255,234,0.4) !important;
+        border-bottom: 2px dashed rgba(0,255,234,0.2) !important;
+    }
+    
+    /* Ensure proper flex container behavior */
+    .hud-container {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        padding: 15px !important;
+        padding-bottom: 100px !important;
+    }
+    
+    /* All panels get centered and full width on mobile */
+    .hud-container .panel.floating-panel {
+        width: 95% !important;
+        max-width: 450px !important;
+        margin: 15px auto !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        position: relative !important;
+    }
+    
+    /* Specific spacing for very small screens */
+    @media screen and (max-width: 480px) {
+        .hud-container .panel.floating-panel#infoPanel {
+            margin-bottom: 70px !important;
+            margin-top: 25px !important;
+        }
+        
+        .hud-container .panel.floating-panel#notificationPanel {
+            margin-top: 70px !important;
+            margin-bottom: 25px !important;
+        }
+        
+        .hud-container .panel.floating-panel#infoPanel::after {
+            height: 40px !important;
+            margin: 25px 0 !important;
+        }
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    body { background: #000000; color: #ffffff; }
+    .panel { border-width: 2px; background: rgba(255,255,255,0.1); }
+    button { border-width: 2px; }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    
+    .circle { animation: none; }
+    button.listening { animation: none; }
+}
+
+/* Focus management for accessibility */
+button:focus, textarea:focus {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    .controls, .panel { display: none !important; }
+    body { background: white !important; color: black !important; }
 }

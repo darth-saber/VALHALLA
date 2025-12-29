@@ -1,0 +1,38 @@
+# VALHALLA - Python Dependencies
+
+# Web Framework
+Flask==2.3.3
+
+# HTTP Requests
+requests==2.31.0
+
+# PDF Processing
+PyPDF2==3.0.1
+
+# OpenAI API (if using newer versions)
+openai==0.28.1
+
+# Environment Variables
+python-dotenv==1.0.0
+
+# Date/Time utilities (usually included with Python)
+# datetime - built-in
+
+# Logging (built-in)
+# logging - built-in
+
+# OS utilities (built-in)
+# os - built-in
+
+# JSON handling (built-in)
+# json - built-in
+
+# Optional: Enhanced AI features
+# tensorflow==2.13.0  # For advanced AI features
+# pillow==10.0.1      # For image processing
+# numpy==1.24.3       # For numerical operations
+
+# Optional: Development tools
+# pytest==7.4.2       # For testing
+# black==23.9.1       # For code formatting
+# flake8==6.1.0       # For linting
