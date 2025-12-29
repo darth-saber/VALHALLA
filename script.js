@@ -1069,6 +1069,7 @@ function jarvisGreet() {
 // Add welcome message with JARVIS greeting
 setTimeout(()=>{
   addNotification("Welcome! VALHALLA is ready.");
+  speak("Welcome! VALHALLA is ready.");
   jarvisGreet();
   const welcomeMessage = "How may I help you?";
   setTimeout(() => {

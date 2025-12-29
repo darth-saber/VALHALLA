@@ -124,7 +124,7 @@ body {
 
 /* Desktop Grid Layout - No overlapping panels */
 @media (min-width: 1025px) {
-    /* CSS Grid Container - Fixed for existing panels only */
+    /* CSS Grid Container - Fixed layout for all panels */
     .hud-container {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
@@ -133,7 +133,7 @@ body {
             "response info"
             "voice system"
             "productivity reminders"
-            "notification controls"
+            "notification notification"
             "controls controls" !important;
         gap: 40px !important; /* Increased gap between panels */
         padding: 40px !important; /* Increased padding */
@@ -192,6 +192,7 @@ body {
         max-height: 200px !important;
         overflow-y: auto !important;
         padding: 15px !important;
+        margin-bottom: 20px !important; /* Extra spacing before controls */
     }
     
     /* Controls at bottom - Flexbox */
