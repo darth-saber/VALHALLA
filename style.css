@@ -1,0 +1,60 @@
+body {
+    margin: 0; padding: 0;
+    font-family: 'Orbitron', sans-serif;
+    background: radial-gradient(circle at center, #0c0c0c, #050505);
+    color: #00ffea; overflow: hidden;
+}
+
+.hud-container { position: relative; width: 100vw; height: 100vh; padding: 20px; }
+
+.hud-center {
+    position: absolute; top: 40%; left: 50%;
+    transform: translate(-50%, -50%); text-align: center;
+}
+
+.hud-center h1 { font-size: 3em; color: #00ffea; text-shadow: 0 0 20px #00ffea; }
+.subtitle { font-size: 1.2em; color: #0ff; }
+
+.circle {
+    width: 150px; height: 150px; border-radius: 50%;
+    border: 3px solid #00ffea; margin: 0 auto 20px auto;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.7; }
+}
+
+.panel {
+    position: absolute; background: rgba(0,0,0,0.3);
+    border: 1px solid #00ffea; padding: 15px; border-radius: 12px;
+    backdrop-filter: blur(15px); box-shadow: 0 0 60px #00ffea;
+    transition: all 0.5s ease-in-out; transform-style: preserve-3d;
+}
+.floating-panel.animate {
+    transform: translateZ(20px) rotateY(5deg) rotateX(2deg);
+    box-shadow: 0 0 80px #00ffea;
+}
+
+#responsePanel { top: 10%; left: 5%; }
+#infoPanel { top: 10%; right: 5%; }
+#reminderPanel { bottom: 20%; left: 50%; transform: translateX(-50%); }
+#notificationPanel { bottom: 40%; right: 5%; }
+#voicePanel { top: 50%; left: 50%; transform: translateX(-50%); }
+
+#responseArea { white-space: pre-wrap; border-left: 2px solid #00ffea; padding-left: 5px; }
+
+.controls { position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; flex-wrap: wrap; }
+button {
+    padding: 10px 20px; border: 1px solid #00ffea; border-radius: 8px;
+    background: transparent; color: #00ffea; font-size: 16px; cursor: pointer;
+    transition: 0.3s;
+}
+button:hover { background: rgba(0,255,234,0.2); }
+
+textarea {
+    width: 300px; height: 40px; border-radius: 8px; border: 1px solid #00ffea;
+    background: transparent; color: #00ffea; padding: 5px;
+}

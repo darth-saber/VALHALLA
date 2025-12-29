@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VALHALLA - Ultimate JARVIS HUD</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="hud-container">
+  <div class="hud-center">
+    <div id="listening" class="circle"></div>
+    <h1>VALHALLA</h1>
+    <p class="subtitle">Your AI Assistant</p>
+  </div>
+
+  <div class="panel floating-panel" id="responsePanel">
+    <h2>AI Response</h2>
+    <pre id="responseArea">Awaiting command...</pre>
+  </div>
+
+  <div class="panel floating-panel" id="infoPanel">
+    <h2>System Info</h2>
+    <p id="timeInfo"></p>
+    <p id="weatherInfo"></p>
+  </div>
+
+  <div class="panel floating-panel" id="reminderPanel">
+    <h2>Reminders</h2>
+    <ul id="reminderList"></ul>
+  </div>
+
+  <div class="panel floating-panel" id="notificationPanel">
+    <h2>Notifications</h2>
+    <ul id="notificationList"></ul>
+  </div>
+
+  <div class="panel floating-panel" id="voicePanel">
+    <h2>Voice Settings</h2>
+    <select id="voiceSelect">
+      <option value="default">Default</option>
+      <option value="deep">Deep</option>
+      <option value="calm">Calm</option>
+      <option value="witty">Witty</option>
+    </select>
+  </div>
+
+  <div class="controls">
+    <button id="speakBtn">🎤 Speak</button>
+    <button id="sendBtn">Send</button>
+    <button id="uploadBtn">📂 Upload File</button>
+    <input type="file" id="fileInput" style="display:none;">
+    <textarea id="userInput" placeholder="Type command..."></textarea>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
+.
