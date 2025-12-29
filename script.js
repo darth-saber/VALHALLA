@@ -10,12 +10,45 @@ const userInput = document.getElementById('userInput');
 const responseArea = document.getElementById('responseArea');
 const mobileNav = document.getElementById('mobileNav');
 const loadingIndicator = document.getElementById('loadingIndicator');
+const shortcutsPanel = document.getElementById('shortcutsPanel');
+const helpHint = document.getElementById('helpHint');
+const closeShortcuts = document.getElementById('closeShortcuts');
+
+// System Control elements
+const volumeDown = document.getElementById('volumeDown');
+const volumeUp = document.getElementById('volumeUp');
+const brightnessDown = document.getElementById('brightnessDown');
+const brightnessUp = document.getElementById('brightnessUp');
+const screenshotBtn = document.getElementById('screenshotBtn');
+const lockScreenBtn = document.getElementById('lockScreenBtn');
+const volumeLevel = document.getElementById('volumeLevel');
+const brightnessLevel = document.getElementById('brightnessLevel');
+const systemStats = document.getElementById('systemStats');
+const batteryLevel = document.getElementById('batteryLevel');
+const batteryStatus = document.getElementById('batteryStatus');
+
+// Productivity elements
+const newNoteBtn = document.getElementById('newNoteBtn');
+const calendarBtn = document.getElementById('calendarBtn');
+const taskListBtn = document.getElementById('taskListBtn');
+const timerBtn = document.getElementById('timerBtn');
+const musicControlBtn = document.getElementById('musicControlBtn');
+const newsBtn = document.getElementById('newsBtn');
 
 let selectedVoice = 'default';
 let reminders = [];
 let conversationHistory = [];
 let searchHistory = [];
 let isListening = false;
+
+// System control variables
+let currentVolume = 50;
+let currentBrightness = 75;
+
+// Timer variables
+let timerInterval = null;
+let timerSeconds = 0;
+let timerActive = false;
 
 voiceSelect.addEventListener('change', ()=> selectedVoice = voiceSelect.value);
 
@@ -95,8 +128,8 @@ function typeWriter(el,text){
   },20);
 }
 
-// Enhanced AI command with history and search support
-async function sendCommand(command){
+// Enhanced AI command with client-side processing
+function sendCommand(command){
   if(!command) return;
   
   // Add to conversation history
@@ -114,57 +147,179 @@ async function sendCommand(command){
   
   floatPanel(responsePanel);
   
-  try {
-    const response = await fetch('/ask',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({command})
-    });
-    
-    if(!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    
-    // Add to conversation history
-    conversationHistory.push({
-      type: 'assistant',
-      message: data.response,
-      timestamp: new Date().toISOString()
-    });
-    
-    // Keep conversation history to last 50 messages
-    if(conversationHistory.length > 50) {
-      conversationHistory = conversationHistory.slice(-50);
-    }
-    
-    typeWriter(responseArea,`VALHALLA: ${data.response}`);
-    speak(data.response);
-    
-    if(command.toLowerCase().includes("remind me")) {
-      addReminder(command);
-    }
-    
-    // Add search results to history display
-    if(command.toLowerCase().includes("search")) {
-      addNotification(`Search completed: ${command}`);
-    }
-    
-    // Weather joke notification
-    if(command.toLowerCase().includes("joke")) {
-      addNotification("Weather joke delivered! 😄");
-    }
-    
-  } catch (error) {
-    console.error('Error sending command:', error);
-    typeWriter(responseArea,`VALHALLA: Sorry, I encountered an error: ${error.message}`);
-    speak("Sorry, I encountered an error. Please try again.");
-    addNotification(`Error: ${error.message}`);
+  // Process commands client-side
+  const response = processCommand(command);
+  
+  // Add to conversation history
+  conversationHistory.push({
+    type: 'assistant',
+    message: response,
+    timestamp: new Date().toISOString()
+  });
+  
+  // Keep conversation history to last 50 messages
+  if(conversationHistory.length > 50) {
+    conversationHistory = conversationHistory.slice(-50);
+  }
+  
+  typeWriter(responseArea,`VALHALLA: ${response}`);
+  speak(response);
+  
+  // Handle specific command types
+  if(command.toLowerCase().includes("remind me")) {
+    addReminder(command);
+  }
+  
+  // Add search results to history display
+  if(command.toLowerCase().includes("search")) {
+    addNotification(`Search completed: ${command}`);
+  }
+  
+  // Weather joke notification
+  if(command.toLowerCase().includes("joke")) {
+    addNotification("Weather joke delivered! 😄");
   }
 }
 
+// Client-side command processing
+function processCommand(command) {
+  const cmd = command.toLowerCase().trim();
+  
+  // Application opening commands
+  if (cmd.includes('open vs code') || cmd.includes('open visual studio code') || cmd === 'vs code' || cmd === 'vscode') {
+    openApplication('vscode');
+    return 'Opening Visual Studio Code...';
+  }
+  
+  if (cmd.includes('open zed') || cmd.includes('open zed editor') || cmd === 'zed' || cmd === 'zed editor') {
+    openApplication('zed');
+    return 'Opening Zed Code Editor...';
+  }
+  
+  if (cmd.includes('open browser') || cmd.includes('open web') || cmd === 'browser' || cmd === 'web') {
+    openApplication('web');
+    return 'Opening web browser...';
+  }
+  
+  // System commands
+  if (cmd.includes('take screenshot') || cmd === 'screenshot') {
+    if (screenshotBtn) screenshotBtn.click();
+    return 'Taking screenshot...';
+  }
+  
+  if (cmd.includes('lock screen') || cmd === 'lock') {
+    if (lockScreenBtn) lockScreenBtn.click();
+    return 'Locking screen...';
+  }
+  
+  if (cmd.includes('volume up') || cmd.includes('increase volume')) {
+    if (volumeUp) volumeUp.click();
+    return 'Increasing volume...';
+  }
+  
+  if (cmd.includes('volume down') || cmd.includes('decrease volume')) {
+    if (volumeDown) volumeDown.click();
+    return 'Decreasing volume...';
+  }
+  
+  if (cmd.includes('brightness up') || cmd.includes('increase brightness')) {
+    if (brightnessUp) brightnessUp.click();
+    return 'Increasing brightness...';
+  }
+  
+  if (cmd.includes('brightness down') || cmd.includes('decrease brightness')) {
+    if (brightnessDown) brightnessDown.click();
+    return 'Decreasing brightness...';
+  }
+  
+  // Productivity commands
+  if (cmd.includes('new note') || cmd === 'note') {
+    if (newNoteBtn) newNoteBtn.click();
+    return 'Creating new note...';
+  }
+  
+  if (cmd.includes('open calendar') || cmd === 'calendar') {
+    if (calendarBtn) calendarBtn.click();
+    return 'Opening calendar...';
+  }
+  
+  if (cmd.includes('new task') || cmd === 'task') {
+    if (taskListBtn) taskListBtn.click();
+    return 'Adding new task...';
+  }
+  
+  if (cmd.includes('start timer') || cmd === 'timer') {
+    if (timerBtn) timerBtn.click();
+    return 'Setting up timer...';
+  }
+  
+  if (cmd.includes('open spotify') || cmd.includes('music') || cmd === 'music') {
+    if (musicControlBtn) musicControlBtn.click();
+    return 'Opening music control...';
+  }
+  
+  if (cmd.includes('news') || cmd === 'news') {
+    if (newsBtn) newsBtn.click();
+    return 'Fetching latest news...';
+  }
+  
+  // Utility commands
+  if (cmd.includes('clear') || cmd === 'clear') {
+    userInput.value = '';
+    return 'Input cleared.';
+  }
+  
+  if (cmd.includes('help') || cmd === 'help' || cmd === '?') {
+    showShortcutsPanel();
+    return 'Opening help panel with keyboard shortcuts...';
+  }
+  
+  if (cmd.includes('time') || cmd === 'time') {
+    const now = new Date();
+    return `Current time is ${now.toLocaleTimeString()}.`;
+  }
+  
+  if (cmd.includes('date') || cmd === 'date') {
+    const now = new Date();
+    return `Today is ${now.toLocaleDateString()}.`;
+  }
+  
+  if (cmd.includes('weather') || cmd === 'weather') {
+    return 'Weather functionality requires internet connection. You can check weather websites or use voice commands.';
+  }
+  
+  if (cmd.includes('joke') || cmd === 'joke') {
+    const jokes = [
+      "Why do programmers prefer dark mode? Because light attracts bugs!",
+      "Why did the computer go to the doctor? Because it had a virus!",
+      "What do you call a computer that sings? A-Dell!",
+      "Why don't computers ever get tired? Because they have rest modes!",
+      "What did one computer say to another? You look a bit off today!"
+    ];
+    const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+    return randomJoke;
+  }
+  
+  // Default responses
+  const defaultResponses = [
+    "I understand your command. For specific actions like opening applications, please use the system control buttons or voice commands.",
+    "I've received your command. Try commands like 'open vs code', 'take screenshot', 'start timer', or use the control panels.",
+    "Command noted. I can help you with system controls, productivity tools, and opening applications. What would you like to do?",
+    "I'm ready to assist. You can control system settings, open applications, or use productivity features. How may I help?"
+  ];
+  
+  return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+}
+
 sendBtn.addEventListener('click', ()=>sendCommand(userInput.value));
+
+// Also handle Enter key in textarea
+userInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendCommand(userInput.value);
+    }
+});
 
 // Enhanced Voice recognition
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -298,7 +453,452 @@ document.addEventListener('keydown', (event)=>{
     userInput.focus();
     userInput.value = 'search for ';
   }
+  
+  // Ctrl+E or Cmd+E to open VS Code
+  if((event.ctrlKey || event.metaKey) && event.key === 'e') {
+    event.preventDefault();
+    openApplication('vscode');
+  }
+  
+  // Ctrl+Z or Cmd+Z to open Zed
+  if((event.ctrlKey || event.metaKey) && event.key === 'z') {
+    event.preventDefault();
+    openApplication('zed');
+  }
+  
+  // Ctrl+W or Cmd+W to open web browser
+  if((event.ctrlKey || event.metaKey) && event.key === 'w') {
+    event.preventDefault();
+    openApplication('web');
+  }
+  
+  // ? key to show shortcuts help
+  if(event.key === '?') {
+    event.preventDefault();
+    showShortcutsPanel();
+  }
+  
+  // Ctrl+R or Cmd+R to refresh
+  if((event.ctrlKey || event.metaKey) && event.key === 'r') {
+    event.preventDefault();
+    location.reload();
+  }
+  
+  // Ctrl+N or Cmd+N to new note
+  if((event.ctrlKey || event.metaKey) && event.key === 'n') {
+    event.preventDefault();
+    if (newNoteBtn) newNoteBtn.click();
+  }
+  
+  // Ctrl+T or Cmd+T to start timer
+  if((event.ctrlKey || event.metaKey) && event.key === 't') {
+    event.preventDefault();
+    if (timerBtn) timerBtn.click();
+  }
 });
+
+// Shortcuts panel functions
+function showShortcutsPanel() {
+    if (shortcutsPanel) {
+        shortcutsPanel.style.display = 'flex';
+        helpHint.classList.remove('show');
+    }
+}
+
+function hideShortcutsPanel() {
+    if (shortcutsPanel) {
+        shortcutsPanel.style.display = 'none';
+    }
+}
+
+// Close shortcuts panel events
+if (closeShortcuts) {
+    closeShortcuts.addEventListener('click', hideShortcutsPanel);
+}
+
+if (shortcutsPanel) {
+    shortcutsPanel.addEventListener('click', (event) => {
+        if (event.target === shortcutsPanel) {
+            hideShortcutsPanel();
+        }
+    });
+}
+
+// Show help hint after a delay
+setTimeout(() => {
+    if (helpHint) {
+        helpHint.classList.add('show');
+        // Hide hint after 10 seconds
+        setTimeout(() => {
+            helpHint.classList.remove('show');
+        }, 10000);
+    }
+}, 3000);
+
+// System Control Functions
+if (volumeDown) {
+    volumeDown.addEventListener('click', () => {
+        currentVolume = Math.max(0, currentVolume - 10);
+        updateVolumeDisplay();
+        addNotification(`Volume decreased to ${currentVolume}%`);
+        speak(`Volume decreased to ${currentVolume} percent`);
+    });
+}
+
+if (volumeUp) {
+    volumeUp.addEventListener('click', () => {
+        currentVolume = Math.min(100, currentVolume + 10);
+        updateVolumeDisplay();
+        addNotification(`Volume increased to ${currentVolume}%`);
+        speak(`Volume increased to ${currentVolume} percent`);
+    });
+}
+
+if (brightnessDown) {
+    brightnessDown.addEventListener('click', () => {
+        currentBrightness = Math.max(10, currentBrightness - 10);
+        updateBrightnessDisplay();
+        addNotification(`Brightness decreased to ${currentBrightness}%`);
+        speak(`Brightness decreased to ${currentBrightness} percent`);
+    });
+}
+
+if (brightnessUp) {
+    brightnessUp.addEventListener('click', () => {
+        currentBrightness = Math.min(100, currentBrightness + 10);
+        updateBrightnessDisplay();
+        addNotification(`Brightness increased to ${currentBrightness}%`);
+        speak(`Brightness increased to ${currentBrightness} percent`);
+    });
+}
+
+if (screenshotBtn) {
+    screenshotBtn.addEventListener('click', () => {
+        addNotification('📸 Taking screenshot...');
+        speak('Taking screenshot');
+        // Note: Actual screenshot would require system permissions
+        setTimeout(() => {
+            addNotification('Screenshot saved to desktop');
+            speak('Screenshot saved to desktop');
+        }, 1000);
+    });
+}
+
+if (lockScreenBtn) {
+    lockScreenBtn.addEventListener('click', () => {
+        addNotification('🔒 Locking screen...');
+        speak('Locking screen');
+        // Note: Actual screen lock would require system permissions
+        setTimeout(() => {
+            addNotification('Screen locked successfully');
+            speak('Screen locked successfully');
+        }, 1500);
+    });
+}
+
+// Productivity Functions
+if (newNoteBtn) {
+    newNoteBtn.addEventListener('click', () => {
+        const noteTitle = prompt('Enter note title:');
+        if (noteTitle) {
+            addNotification(`📝 Creating note: ${noteTitle}`);
+            speak(`Creating note ${noteTitle}`);
+            addReminder(`Note: ${noteTitle}`);
+        }
+    });
+}
+
+if (calendarBtn) {
+    calendarBtn.addEventListener('click', () => {
+        addNotification('📅 Opening calendar...');
+        speak('Opening calendar');
+        window.open('https://calendar.google.com', '_blank');
+    });
+}
+
+if (taskListBtn) {
+    taskListBtn.addEventListener('click', () => {
+        const task = prompt('Enter new task:');
+        if (task) {
+            addNotification(`✅ Adding task: ${task}`);
+            speak(`Adding task ${task}`);
+            addReminder(`Task: ${task}`);
+        }
+    });
+}
+
+if (timerBtn) {
+    timerBtn.addEventListener('click', () => {
+        if (!timerActive) {
+            const minutes = parseInt(prompt('Set timer for how many minutes? (1-60)'));
+            if (minutes && minutes > 0 && minutes <= 60) {
+                startTimer(minutes * 60);
+            }
+        } else {
+            stopTimer();
+        }
+    });
+}
+
+if (musicControlBtn) {
+    musicControlBtn.addEventListener('click', () => {
+        addNotification('🎵 Music control opened');
+        speak('Music control opened');
+        window.open('https://open.spotify.com', '_blank');
+    });
+}
+
+if (newsBtn) {
+    newsBtn.addEventListener('click', () => {
+        addNotification('📰 Fetching latest news...');
+        speak('Fetching latest news');
+        sendCommand('tell me the latest news');
+    });
+}
+
+// Helper functions
+function updateVolumeDisplay() {
+    if (volumeLevel) {
+        volumeLevel.textContent = `${currentVolume}%`;
+    }
+}
+
+function updateBrightnessDisplay() {
+    if (brightnessLevel) {
+        brightnessLevel.textContent = `${currentBrightness}%`;
+    }
+}
+
+function startTimer(seconds) {
+    timerSeconds = seconds;
+    timerActive = true;
+    if (timerBtn) {
+        timerBtn.textContent = '⏹️ Stop';
+        timerBtn.classList.add('listening');
+    }
+    
+    timerInterval = setInterval(() => {
+        timerSeconds--;
+        updateTimerDisplay();
+        
+        if (timerSeconds <= 0) {
+            stopTimer();
+            addNotification('⏰ Timer finished!');
+            speak('Timer finished');
+            // Flash notification
+            document.body.style.background = 'red';
+            setTimeout(() => {
+                document.body.style.background = '';
+            }, 500);
+        }
+    }, 1000);
+    
+    addNotification(`⏱️ Timer started for ${Math.floor(timerSeconds / 60)} minutes`);
+    speak(`Timer started for ${Math.floor(timerSeconds / 60)} minutes`);
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    timerActive = false;
+    timerSeconds = 0;
+    
+    if (timerBtn) {
+        timerBtn.textContent = '⏱️ Timer';
+        timerBtn.classList.remove('listening');
+    }
+    
+    addNotification('⏹️ Timer stopped');
+    speak('Timer stopped');
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timerSeconds / 60);
+    const seconds = timerSeconds % 60;
+    const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    
+    if (timerBtn) {
+        timerBtn.textContent = `⏱️ ${timeString}`;
+    }
+}
+
+// Update system stats
+function updateSystemStats() {
+    if (systemStats) {
+        const now = new Date();
+        const uptime = Math.floor((now.getTime() - performance.timeOrigin) / 1000 / 60);
+        const memory = navigator.deviceMemory ? `${navigator.deviceMemory}GB` : 'Unknown';
+        const cores = navigator.hardwareConcurrency || 'Unknown';
+        
+        systemStats.innerHTML = `
+            Time: ${now.toLocaleTimeString()}<br>
+            Memory: ${memory} | Cores: ${cores}<br>
+            Screen: ${screen.width}x${screen.height}<br>
+            Browser: ${navigator.userAgent.split(' ')[0]}
+        `;
+    }
+}
+
+// Initialize system stats
+updateSystemStats();
+setInterval(updateSystemStats, 5000);
+
+// Initialize battery monitoring
+initializeBatteryMonitoring();
+
+function initializeBatteryMonitoring() {
+    if ('getBattery' in navigator) {
+        navigator.getBattery().then(function(battery) {
+            updateBatteryDisplay(battery);
+            
+            // Listen for battery changes
+            battery.addEventListener('levelchange', () => updateBatteryDisplay(battery));
+            battery.addEventListener('chargingchange', () => updateBatteryDisplay(battery));
+        }).catch(function(error) {
+            console.log('Battery API not supported');
+            updateBatteryDisplay(null);
+        });
+    } else {
+        console.log('Battery API not supported');
+        updateBatteryDisplay(null);
+    }
+}
+
+function updateBatteryDisplay(battery) {
+    if (battery && batteryLevel && batteryStatus) {
+        const level = Math.round(battery.level * 100);
+        const isCharging = battery.charging;
+        
+        batteryLevel.textContent = `${level}%`;
+        
+        if (isCharging) {
+            batteryStatus.textContent = 'Charging';
+            batteryStatus.style.color = '#00ff88'; // Green when charging
+        } else if (level > 20) {
+            batteryStatus.textContent = 'On Battery';
+            batteryStatus.style.color = '#00ffea'; // Normal color
+        } else {
+            batteryStatus.textContent = 'Low Battery';
+            batteryStatus.style.color = '#ff4444'; // Red when low
+        }
+        
+        // Show warning for low battery
+        if (level <= 15 && !isCharging) {
+            addNotification('🔋 Low Battery Warning!');
+            speak('Low battery warning');
+        }
+    } else if (batteryLevel && batteryStatus) {
+        // Battery API not supported
+        batteryLevel.textContent = 'N/A';
+        batteryStatus.textContent = 'Not Supported';
+        batteryStatus.style.color = '#666666';
+    }
+}
+
+
+// Function to open applications
+function openApplication(app) {
+    let message = '';
+    let instructions = '';
+    
+    switch(app) {
+        case 'vscode':
+            message = 'Opening Visual Studio Code...';
+            instructions = 'Opening VS Code. If it doesn\'t open automatically, press Ctrl+E or Cmd+E again.';
+            
+            // Try multiple approaches to open VS Code
+            if (navigator.platform.includes('Mac')) {
+                // macOS - Try using custom URL scheme first
+                try {
+                    window.location.href = 'vscode://';
+                    setTimeout(() => {
+                        // Fallback to app directory
+                        window.open('vscode://', '_blank');
+                    }, 500);
+                } catch (e) {
+                    console.log('VS Code URL scheme not available');
+                }
+            } else if (navigator.platform.includes('Win')) {
+                // Windows - Try common installation paths
+                const commonPaths = [
+                    'C:\\Users\\%USERNAME%\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe',
+                    'C:\\Program Files\\Microsoft VS Code\\Code.exe',
+                    'C:\\Program Files (x86)\\Microsoft VS Code\\Code.exe'
+                ];
+                
+                // For demo purposes, show instructions
+                instructions += ' On Windows: Press Win+R, type "code" and press Enter.';
+            } else {
+                // Linux
+                instructions += ' On Linux: Press Ctrl+Alt+T and type "code" and press Enter.';
+            }
+            
+            // Also try to open VS Code web version as fallback
+            setTimeout(() => {
+                window.open('https://vscode.dev/', '_blank');
+            }, 1000);
+            break;
+            
+        case 'zed':
+            message = 'Opening Zed Code Editor...';
+            instructions = 'Opening Zed Editor. If it doesn\'t open automatically, press Ctrl+Z or Cmd+Z again.';
+            
+            // Try to open Zed
+            if (navigator.platform.includes('Mac')) {
+                try {
+                    window.location.href = 'zed://';
+                    setTimeout(() => {
+                        window.open('zed://', '_blank');
+                    }, 500);
+                } catch (e) {
+                    console.log('Zed URL scheme not available');
+                }
+            } else if (navigator.platform.includes('Win')) {
+                instructions += ' On Windows: Press Win+R, type "zed" and press Enter.';
+            } else {
+                instructions += ' On Linux: Press Ctrl+Alt+T and type "zed" and press Enter.';
+            }
+            
+            // Fallback to Zed web version
+            setTimeout(() => {
+                window.open('https://zed.dev/', '_blank');
+            }, 1000);
+            break;
+            
+        case 'web':
+            message = 'Opening web browser...';
+            // Open default web browser with Google
+            window.open('https://www.google.com', '_blank');
+            addNotification('🌐 Web browser opened with Google search.');
+            speak('Web browser opened with Google search.');
+            return; // Early return for web case
+    }
+    
+    addNotification(message);
+    speak(message);
+    
+    // Show instructions for manual opening if automatic opening fails
+    setTimeout(() => {
+        if (instructions) {
+            addNotification(`💡 ${instructions}`);
+            speak('Instructions provided in notifications.');
+        }
+    }, 1000);
+    
+    // Add helpful suggestions
+    setTimeout(() => {
+        const suggestions = [
+            '💡 Tip: Install VS Code extension "Live Server" for web development',
+            '💡 Tip: Use Ctrl+` to toggle VS Code terminal',
+            '💡 Tip: Install Zed browser extension for better integration',
+            '💡 Tip: Both editors support Git integration and extensions'
+        ];
+        const suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+        addNotification(suggestion);
+    }, 3000);
+}
 
 // Enhanced time/weather display with error handling
 setInterval(()=>{

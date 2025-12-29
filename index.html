@@ -60,6 +60,52 @@
     </div>
   </div>
 
+  <div class="panel floating-panel" id="systemPanel">
+    <h2>System Control</h2>
+    <div class="system-content">
+      <div class="control-row">
+        <button id="volumeDown" class="system-btn">🔉 Vol-</button>
+        <span id="volumeLevel" class="system-status">50%</span>
+        <button id="volumeUp" class="system-btn">🔊 Vol+</button>
+      </div>
+      <div class="control-row">
+        <button id="brightnessDown" class="system-btn">💡 Bright-</button>
+        <span id="brightnessLevel" class="system-status">75%</span>
+        <button id="brightnessUp" class="system-btn">💡 Bright+</button>
+      </div>
+      <div class="control-row">
+        <button id="screenshotBtn" class="system-btn">📸 Screenshot</button>
+        <button id="lockScreenBtn" class="system-btn">🔒 Lock</button>
+      </div>
+      <div class="control-row">
+        <span class="system-status">🔋</span>
+        <span id="batteryLevel" class="system-status">--%</span>
+        <span id="batteryStatus" class="system-status">Unknown</span>
+      </div>
+      <div class="system-info">
+        <div id="systemStats">System: Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="productivityPanel">
+    <h2>Productivity</h2>
+    <div class="productivity-content">
+      <div class="control-row">
+        <button id="newNoteBtn" class="productivity-btn">📝 New Note</button>
+        <button id="calendarBtn" class="productivity-btn">📅 Calendar</button>
+      </div>
+      <div class="control-row">
+        <button id="taskListBtn" class="productivity-btn">✅ Tasks</button>
+        <button id="timerBtn" class="productivity-btn">⏱️ Timer</button>
+      </div>
+      <div class="control-row">
+        <button id="musicControlBtn" class="productivity-btn">🎵 Music</button>
+        <button id="newsBtn" class="productivity-btn">📰 News</button>
+      </div>
+    </div>
+  </div>
+
   <div class="controls">
     <div class="button-row">
       <button id="speakBtn" class="control-btn">🎤 Speak</button>
@@ -86,6 +132,26 @@
   <div class="loading-spinner"></div>
   <p>Processing...</p>
 </div>
+
+<!-- Shortcuts help panel -->
+<div id="shortcutsPanel" class="shortcuts-panel" style="display: none;">
+  <div class="shortcuts-content">
+    <h3>⌨️ Keyboard Shortcuts</h3>
+    <ul>
+      <li><kbd>Ctrl+Enter</kbd> or <kbd>Cmd+Enter</kbd> - Send command</li>
+      <li><kbd>Ctrl+E</kbd> or <kbd>Cmd+E</kbd> - Open VS Code</li>
+      <li><kbd>Ctrl+Z</kbd> or <kbd>Cmd+Z</kbd> - Open Zed Editor</li>
+      <li><kbd>Ctrl+W</kbd> or <kbd>Cmd+W</kbd> - Open Web Browser</li>
+      <li><kbd>Ctrl+S</kbd> or <kbd>Cmd+S</kbd> - Focus search</li>
+      <li><kbd>Ctrl+L</kbd> or <kbd>Cmd+L</kbd> - Clear input</li>
+      <li><kbd>Ctrl+J</kbd> or <kbd>Cmd+J</kbd> - Weather joke</li>
+    </ul>
+    <button id="closeShortcuts" class="close-btn">✕</button>
+  </div>
+</div>
+
+<!-- Help hint -->
+<div id="helpHint" class="keyboard-hint">Press <strong>?</strong> for shortcuts</div>
 
 <script src="script.js"></script>
 </body>
