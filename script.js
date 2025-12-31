@@ -90,15 +90,7 @@ function hideLoading() {
     }
 }
 
-function speak(text){
-  let utter = new SpeechSynthesisUtterance(text);
-  if(selectedVoice!=='default'){
-    let voices = speechSynthesis.getVoices();
-    let voice = voices.find(v=>v.name.toLowerCase().includes(selectedVoice)) || voices[0];
-    utter.voice = voice;
-  }
-  speechSynthesis.speak(utter);
-}
+// Note: The enhanced speak() function is defined below (after the timer functions)
 
 function floatPanel(panel){
   panel.classList.add('animate');
