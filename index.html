@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="VALHALLA">
 <meta name="format-detection" content="telephone=no">
-<title>VALHALLA - Ultimate JARVIS HUD</title>
+<title>VALHALLA - Ultimate AI Assistant</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -29,13 +29,18 @@
     <h2>System Info</h2>
     <div class="info-content">
       <p id="weatherInfo" class="status-info"></p>
+      <p id="timeInfo" class="status-info"></p>
     </div>
   </div>
 
   <div class="panel floating-panel" id="reminderPanel">
-    <h2>Reminders</h2>
+    <h2>Reminders & Tasks</h2>
     <div class="reminder-content">
       <ul id="reminderList"></ul>
+    </div>
+    <div class="quick-actions">
+      <button id="addReminderBtn" class="quick-btn">+ Add Reminder</button>
+      <button id="addTaskBtn" class="quick-btn">+ Add Task</button>
     </div>
   </div>
 
@@ -43,6 +48,315 @@
     <h2>Notifications</h2>
     <div class="notification-content">
       <ul id="notificationList"></ul>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="notesPanel">
+    <h2>Notes</h2>
+    <div class="notes-content">
+      <textarea id="notesInput" class="notes-textarea" placeholder="Create a new note..."></textarea>
+      <div class="notes-actions">
+        <button id="saveNoteBtn" class="action-btn">Save Note</button>
+        <button id="clearNoteBtn" class="action-btn">Clear</button>
+      </div>
+      <div id="notesList" class="notes-list"></div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="calendarPanel">
+    <h2>Calendar</h2>
+    <div class="calendar-content">
+      <div class="calendar-header">
+        <button id="prevMonth" class="cal-btn">◀</button>
+        <span id="currentMonth">January 2025</span>
+        <button id="nextMonth" class="cal-btn">▶</button>
+      </div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+      <div class="events-list">
+        <h4>Upcoming Events</h4>
+        <ul id="eventsList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="emailPanel">
+    <h2>Email & Messages</h2>
+    <div class="email-content">
+      <div class="email-compose">
+        <input type="email" id="emailTo" class="email-input" placeholder="To: email@example.com">
+        <input type="text" id="emailSubject" class="email-input" placeholder="Subject">
+        <textarea id="emailBody" class="email-textarea" placeholder="Compose email..."></textarea>
+        <div class="email-actions">
+          <button id="sendEmailBtn" class="action-btn">Send Email</button>
+          <button id="summarizeEmailBtn" class="action-btn">Summarize Last Email</button>
+        </div>
+      </div>
+      <div id="emailInbox" class="email-inbox"></div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="translationPanel">
+    <h2>Translation</h2>
+    <div class="translation-content">
+      <textarea id="translateInput" class="translate-input" placeholder="Enter text to translate..."></textarea>
+      <div class="translate-options">
+        <select id="fromLang" class="lang-select">
+          <option value="auto">Auto Detect</option>
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="zh">Chinese</option>
+          <option value="ja">Japanese</option>
+          <option value="ko">Korean</option>
+          <option value="pt">Portuguese</option>
+          <option value="ru">Russian</option>
+        </select>
+        <span>→</span>
+        <select id="toLang" class="lang-select">
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="zh">Chinese</option>
+          <option value="ja">Japanese</option>
+          <option value="ko">Korean</option>
+          <option value="pt">Portuguese</option>
+          <option value="ru">Russian</option>
+        </select>
+        <button id="translateBtn" class="action-btn">Translate</button>
+      </div>
+      <div class="translate-result">
+        <textarea id="translateOutput" class="translate-output" readonly placeholder="Translation will appear here..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="newsPanel">
+    <h2>News & Updates</h2>
+    <div class="news-content">
+      <div class="news-topics">
+        <button class="topic-btn active" data-topic="general">General</button>
+        <button class="topic-btn" data-topic="technology">Technology</button>
+        <button class="topic-btn" data-topic="business">Business</button>
+        <button class="topic-btn" data-topic="science">Science</button>
+        <button class="topic-btn" data-topic="health">Health</button>
+        <button class="topic-btn" data-topic="sports">Sports</button>
+      </div>
+      <div id="newsFeed" class="news-feed">
+        <p>Select a topic or ask for news...</p>
+      </div>
+      <button id="refreshNews" class="action-btn">Refresh News</button>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="filesPanel">
+    <h2>File Management</h2>
+    <div class="files-content">
+      <div class="file-search">
+        <input type="text" id="fileSearch" class="file-input" placeholder="Search files...">
+        <button id="searchFilesBtn" class="action-btn">Search</button>
+      </div>
+      <div class="file-actions">
+        <button id="openFileBtn" class="file-btn">📂 Open File</button>
+        <button id="moveFileBtn" class="file-btn">📁 Move File</button>
+        <button id="deleteFileBtn" class="file-btn">🗑️ Delete File</button>
+      </div>
+      <div id="fileResults" class="file-results"></div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="smartHomePanel">
+    <h2>Smart Home</h2>
+    <div class="smarthome-content">
+      <div class="device-section">
+        <h4>💡 Lights</h4>
+        <div class="device-row">
+          <button id="lightsOn" class="device-btn">On</button>
+          <button id="lightsOff" class="device-btn">Off</button>
+          <input type="range" id="brightnessSlider" min="0" max="100" value="50" class="slider">
+        </div>
+      </div>
+      <div class="device-section">
+        <h4>🌡️ Thermostat</h4>
+        <div class="device-row">
+          <button id="tempDown" class="device-btn">-</button>
+          <span id="currentTemp" class="temp-display">72°F</span>
+          <button id="tempUp" class="device-btn">+</button>
+        </div>
+      </div>
+      <div class="device-section">
+        <h4>📹 Cameras</h4>
+        <div class="device-row">
+          <button id="viewCamera1" class="device-btn">Front Door</button>
+          <button id="viewCamera2" class="device-btn">Backyard</button>
+        </div>
+      </div>
+      <div class="device-section">
+        <h4>🔒 Security</h4>
+        <div class="device-row">
+          <button id="lockDoors" class="device-btn">🔒 Lock</button>
+          <button id="unlockDoors" class="device-btn">🔓 Unlock</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="studyPanel">
+    <h2>Study Helper</h2>
+    <div class="study-content">
+      <div class="study-actions">
+        <button id="summarizeNotesBtn" class="study-btn">📝 Summarize Notes</button>
+        <button id="createFlashcardsBtn" class="study-btn">🃏 Create Flashcards</button>
+        <button id="explainConceptBtn" class="study-btn">💡 Explain Concept</button>
+      </div>
+      <textarea id="studyInput" class="study-input" placeholder="Paste notes or ask to explain a concept..."></textarea>
+      <div id="studyOutput" class="study-output"></div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="codingPanel">
+    <h2>Coding Helper</h2>
+    <div class="coding-content">
+      <div class="coding-actions">
+        <button id="suggestCodeBtn" class="code-btn">💻 Code Suggestion</button>
+        <button id="debugCodeBtn" class="code-btn">🐛 Debug Code</button>
+        <button id="createScriptBtn" class="code-btn">📜 Create Script</button>
+      </div>
+      <textarea id="codeInput" class="code-input" placeholder="Paste code or describe what you need..."></textarea>
+      <div id="codeOutput" class="code-output"></div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="creativePanel">
+    <h2>Creative Tools</h2>
+    <div class="creative-content">
+      <div class="creative-actions">
+        <button id="generateIdeasBtn" class="creative-btn">💡 Generate Ideas</button>
+        <button id="writingPromptBtn" class="creative-btn">✍️ Writing Prompt</button>
+        <button id="visualConceptBtn" class="creative-btn">🎨 Visual Concept</button>
+      </div>
+      <div class="creative-input">
+        <input type="text" id="creativeTopic" class="creative-input" placeholder="Enter a topic or genre...">
+        <button id="generateCreativeBtn" class="action-btn">Generate</button>
+      </div>
+      <div id="creativeOutput" class="creative-output"></div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="mediaPanel">
+    <h2>Music & Media</h2>
+    <div class="media-content">
+      <div class="media-search">
+        <input type="text" id="mediaSearch" class="media-input" placeholder="Search for music, videos, podcasts...">
+        <button id="searchMediaBtn" class="action-btn">Search</button>
+      </div>
+      <div class="media-player">
+        <div id="nowPlaying" class="now-playing">No media playing</div>
+        <div class="media-controls">
+          <button id="playPauseBtn" class="media-btn">▶️ Play</button>
+          <button id="skipBtn" class="media-btn">⏭️ Skip</button>
+          <button id="volumeMediaBtn" class="media-btn">🔊 Volume</button>
+        </div>
+      </div>
+      <div id="mediaResults" class="media-results"></div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="gamesPanel">
+    <h2>Games & Trivia</h2>
+    <div class="games-content">
+      <div class="game-options">
+        <button id="triviaGameBtn" class="game-btn">❓ Trivia</button>
+        <button id="wordGameBtn" class="game-btn">🔤 Word Game</button>
+        <button id="mathGameBtn" class="game-btn">🔢 Math Challenge</button>
+      </div>
+      <div id="gameArea" class="game-area">
+        <p>Select a game to play!</p>
+      </div>
+      <div id="gameScore" class="game-score"></div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="motivationPanel">
+    <h2>Motivation</h2>
+    <div class="motivation-content">
+      <div class="motivation-options">
+        <button id="quoteBtn" class="mot-btn">💬 Daily Quote</button>
+        <button id="mindfulnessBtn" class="mot-btn">🧘 Mindfulness</button>
+        <button id="meditationBtn" class="mot-btn">🕉️ Meditation</button>
+      </div>
+      <div id="motivationOutput" class="motivation-output">
+        <p class="motivation-text">Welcome! What would lift your spirits today?</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="emergencyPanel">
+    <h2>Emergency & Safety</h2>
+    <div class="emergency-content">
+      <div class="emergency-actions">
+        <button id="callEmergencyBtn" class="emergency-btn red">📞 Call Emergency</button>
+        <button id="messageContactBtn" class="emergency-btn orange">📱 Message Contact</button>
+        <button id="shareLocationBtn" class="emergency-btn blue">📍 Share Location</button>
+      </div>
+      <div class="emergency-contacts">
+        <h4>Emergency Contacts</h4>
+        <div class="contact-list">
+          <div class="contact-item">
+            <span>Contact 1</span>
+            <button class="call-btn">📞</button>
+            <button class="msg-btn">💬</button>
+          </div>
+          <div class="contact-item">
+            <span>Contact 2</span>
+            <button class="call-btn">📞</button>
+            <button class="msg-btn">💬</button>
+          </div>
+        </div>
+        <button id="addContactBtn" class="action-btn small">+ Add Contact</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="healthPanel">
+    <h2>Health & Wellness</h2>
+    <div class="health-content">
+      <div class="health-reminders">
+        <button id="hydrationBtn" class="health-btn">💧 Hydration</button>
+        <button id="exerciseBtn" class="health-btn">🏃 Exercise</button>
+        <button id="medicationBtn" class="health-btn">💊 Medication</button>
+        <button id="postureBtn" class="health-btn">🪑 Posture</button>
+      </div>
+      <div class="health-settings">
+        <h4>Reminder Intervals</h4>
+        <label>Hydration: <input type="number" id="hydrationInterval" value="60" min="15" max="240"> min</label>
+        <label>Exercise: <input type="number" id="exerciseInterval" value="60" min="15" max="240"> min</label>
+      </div>
+      <div id="healthStatus" class="health-status">
+        <p>💧 Water: <span id="waterCount">0</span> glasses today</p>
+        <p>🏃 Steps: <span id="stepCount">0</span> today</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel floating-panel" id="accessibilityPanel">
+    <h2>Accessibility</h2>
+    <div class="accessibility-content">
+      <div class="access-options">
+        <button id="highContrastBtn" class="access-btn">🔲 High Contrast</button>
+        <button id="largeTextBtn" class="access-btn">🔤 Large Text</button>
+        <button id="voiceGuidanceBtn" class="access-btn">🔊 Voice Guidance</button>
+        <button id="keyboardOnlyBtn" class="access-btn">⌨️ Keyboard Only</button>
+      </div>
+      <div class="access-settings">
+        <label>
+          <input type="checkbox" id="autoReadAloud" checked> Auto-read responses
+        </label>
+        <label>
+          <input type="checkbox" id="speechInput" checked> Enable speech input
+        </label>
+      </div>
     </div>
   </div>
 
@@ -56,6 +370,9 @@
         <option value="calm">Calm Voice</option>
         <option value="witty">Witty Voice</option>
       </select>
+      <div class="voice-test">
+        <button id="testVoiceBtn" class="action-btn">Test Voice</button>
+      </div>
     </div>
   </div>
 
@@ -87,6 +404,24 @@
     </div>
   </div>
 
+  <div class="panel floating-panel" id="appPanel">
+    <h2>App Launcher</h2>
+    <div class="app-content">
+      <div class="app-grid">
+        <button class="app-btn" data-app="vscode">💻 VS Code</button>
+        <button class="app-btn" data-app="browser">🌐 Browser</button>
+        <button class="app-btn" data-app="spotify">🎵 Spotify</button>
+        <button class="app-btn" data-app="mail">📧 Mail</button>
+        <button class="app-btn" data-app="terminal">⬛ Terminal</button>
+        <button class="app-btn" data-app="finder">📁 Finder</button>
+      </div>
+      <div class="app-custom">
+        <input type="text" id="customApp" class="app-input" placeholder="Open other app...">
+        <button id="openCustomAppBtn" class="action-btn">Open</button>
+      </div>
+    </div>
+  </div>
+
   <div class="panel floating-panel" id="productivityPanel">
     <h2>Productivity</h2>
     <div class="productivity-content">
@@ -102,6 +437,10 @@
         <button id="musicControlBtn" class="productivity-btn">🎵 Music</button>
         <button id="newsBtn" class="productivity-btn">📰 News</button>
       </div>
+      <div class="control-row">
+        <button id="translatePanelBtn" class="productivity-btn">🌐 Translate</button>
+        <button id="filesPanelBtn" class="productivity-btn">📁 Files</button>
+      </div>
     </div>
   </div>
 
@@ -112,7 +451,7 @@
       <button id="uploadBtn" class="control-btn">📂 Upload</button>
     </div>
     <div class="input-row">
-      <textarea id="userInput" class="command-input" placeholder="Type command..." rows="3"></textarea>
+      <textarea id="userInput" class="command-input" placeholder="Type command... (Try: 'remind me to call mom', 'translate hello to spanish', 'play music')" rows="3"></textarea>
     </div>
     <input type="file" id="fileInput" accept=".pdf,.txt,.png,.jpg,.jpeg,.gif" style="display:none;">
   </div>
@@ -122,8 +461,9 @@
 <div class="mobile-nav" id="mobileNav">
   <button class="nav-btn" data-panel="responsePanel">Response</button>
   <button class="nav-btn" data-panel="infoPanel">Info</button>
-  <button class="nav-btn" data-panel="reminderPanel">Reminders</button>
-  <button class="nav-btn" data-panel="notificationPanel">Alerts</button>
+  <button class="nav-btn" data-panel="reminderPanel">Tasks</button>
+  <button class="nav-btn" data-panel="notesPanel">Notes</button>
+  <button class="nav-btn" data-panel="productivityPanel">More</button>
 </div>
 
 <!-- Loading indicator -->
@@ -144,6 +484,9 @@
       <li><kbd>Ctrl+S</kbd> or <kbd>Cmd+S</kbd> - Focus search</li>
       <li><kbd>Ctrl+L</kbd> or <kbd>Cmd+L</kbd> - Clear input</li>
       <li><kbd>Ctrl+J</kbd> or <kbd>Cmd+J</kbd> - Weather joke</li>
+      <li><kbd>Ctrl+M</kbd> or <kbd>Cmd+M</kbd> - Music control</li>
+      <li><kbd>Ctrl+N</kbd> or <kbd>Cmd+N</kbd> - New note</li>
+      <li><kbd>Ctrl+T</kbd> or <kbd>Cmd+T</kbd> - Timer</li>
     </ul>
     <button id="closeShortcuts" class="close-btn">✕</button>
   </div>

@@ -1,54 +1,65 @@
-# VALHALLA Desktop Layout Fix Plan
+# VALHALLA Feature Expansion Plan
 
-## Problem Identified
-- Desktop panels overlapping in bottom right corner
-- CSS Grid layout has duplicate "controls" area causing overlap
-- Notification panel and controls competing for same space
+## Objective
+Add comprehensive AI assistant features across 8 major categories.
 
-## Current Grid Layout Issues
-- Grid template areas: "response info" | "voice system" | "productivity reminders" | "notification controls" | "controls controls"
-- Controls area duplicated in rows 4 and 5
-- 7 panels but grid only accommodates 6 areas properly
+## Status: In Progress
 
-## Solution Plan
+---
 
-### 1. Fix CSS Grid Layout
-- Redesign grid template to accommodate all 7 panels + controls
-- Remove duplicate controls area
-- Ensure proper spacing between notification and controls
+## 1. Personal Assistance & Productivity
+- [ ] Calendar & Reminders - Schedule events, reminders, deadlines
+- [ ] To-Do Lists - Manage tasks, prioritize, track progress
+- [ ] Notes & Document Management - Create, read, edit notes, link files
 
-### 2. Update Grid Areas
-- Row 1: responsePanel | infoPanel  
-- Row 2: voicePanel | systemPanel
-- Row 3: productivityPanel | reminderPanel
-- Row 4: notificationPanel (spans full width)
-- Row 5: controls (spans full width, centered)
+## 2. Communication Assistance
+- [ ] Email & Messaging - Read, draft, send emails, summarize
+- [ ] Language Translation - Real-time text/speech translation
+- [ ] Accessibility Support - TTS, STT, simplified interfaces
 
-### 3. Panel Positioning Fixes
-- Ensure notificationPanel doesn't overlap with controls
-- Add proper margins and padding between all panels
-- Maintain responsive design for mobile
+## 3. Information & Knowledge
+- [ ] Web Search & Summarization - Search web, summarize articles
+- [ ] News & Updates - Personalized news briefings
+- [ ] Weather, Time, Local Info - Real-time data (existing)
 
-### 4. Testing Requirements
-- Test on desktop (1025px+)
-- Ensure no overlapping panels
-- Verify all panels are accessible and visible
-- Maintain mobile responsiveness
+## 4. System & Device Control
+- [ ] File Management - Open, move, search files
+- [ ] App Launching & Control - Open apps, perform tasks
+- [ ] Smart Home Integration - Control lights, thermostats, cameras
 
-## Implementation Steps
-1. ✅ Update CSS Grid template areas - COMPLETED
-   - Changed grid-template-areas from "notification controls" to "notification notification"
-   - This eliminates duplicate "controls" area causing overlap
-   
-2. ✅ Add proper spacing between notification and controls - COMPLETED
-   - Added margin-bottom: 20px to notificationPanel
-   - Ensures clear separation between notification and controls rows
+## 5. Learning & Creativity
+- [ ] Study Helper - Summarize notes, flashcards, explain concepts
+- [ ] Coding Helper - Code suggestions, debugging, automation
+- [ ] Creative Tools - Ideas, writing prompts, visual concepts
 
-3. Adjust panel positioning and sizing - NOT NEEDED
-4. Test layout across different screen sizes - READY FOR TESTING
-5. Verify all functionality remains intact - READY FOR TESTING
+## 6. Entertainment & Motivation
+- [ ] Music & Media Control - Play music, videos, podcasts
+- [ ] Games & Trivia - Mental exercises, fun games
+- [ ] Daily Motivation - Quotes, mindfulness, meditation
 
-## Changes Made
-- **Grid Layout Fix**: notificationPanel now spans full width in row 4
-- **Spacing Enhancement**: Added 20px margin-bottom to notificationPanel
-- **Overlap Resolution**: Eliminated duplicate controls area that was causing bottom-right overlap
+## 7. Safety & Assistance Features
+- [ ] Emergency Alerts - Quick call/message contacts
+- [ ] Health Monitoring - Hydration, exercise, medication reminders
+- [ ] Accessibility Modes - High contrast, large text, voice guidance
+
+## 8. Personality & Interactivity
+- [ ] Conversational Personality - Friendly, humorous, empathetic
+- [ ] Learning User Preferences - Adapt based on habits
+- [ ] Context Awareness - Understand user context
+
+---
+
+## Files to Modify
+- `index.html` - Add new UI panels for all features
+- `script.js` - Add command handlers, keyboard shortcuts, UI interactions
+- `app.py` - Add API endpoints for new features
+- `utils.py` - Add utility functions for new features
+- `style.css` - Add styles for new panels
+
+## Implementation Order
+1. Update index.html with new feature panels
+2. Update script.js with command handlers
+3. Update app.py with API endpoints
+4. Add new keyboard shortcuts
+5. Test and refine
+

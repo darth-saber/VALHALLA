@@ -110,7 +110,6 @@ function addNotification(message){
   li.innerText = message;
   notificationList.appendChild(li);
   li.animate([{transform:'translateY(-20px)',opacity:0},{transform:'translateY(0)',opacity:1}],{duration:500});
-  speak(`Notification: ${message}`);
 }
 
 function addReminder(reminder){
@@ -305,7 +304,7 @@ function processCommand(command) {
     "I understand your command. For specific actions like opening applications, please use the system control buttons or voice commands.",
     "I've received your command. Try commands like 'open vs code', 'take screenshot', 'start timer', or use the control panels.",
     "Command noted. I can help you with system controls, productivity tools, and opening applications. What would you like to do?",
-    "I'm ready to assist. You can control system settings, open applications, or use productivity features. How may I help?"
+    "I'm ready to assist. You can control system settings, open applications, or use productivity features. How may I help you?"
   ];
   
   return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
@@ -1057,9 +1056,8 @@ function speak(text, options = {}) {
 function jarvisGreet() {
   const greetings = [
     "Good day. I am VALHALLA, at your service.",
-    "Welcome. I am online and ready to assist.",
-    "Hello. VALHALLA systems are fully operational.",
-    "Greetings. How may I be of assistance today?"
+    "How may I help you?",
+    "Hello. VALHALLA systems are fully operational."
   ];
   
   const greeting = greetings[Math.floor(Math.random() * greetings.length)];
@@ -1074,6 +1072,6 @@ setTimeout(()=>{
   const welcomeMessage = "How may I help you?";
   setTimeout(() => {
     speak(welcomeMessage);
-    typeWriter(responseArea, `VALHALLA: ${welcomeMessage}`);
+    typeWriter(responseArea, welcomeMessage);
   }, 2000);
 }, 1000);
